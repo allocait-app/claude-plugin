@@ -1,0 +1,15 @@
+{
+  "name": "allocait",
+  "description": "Allocait's plugin for Claude: check a portfolio against your own allocation rules. Never trades.",
+  "owner": {
+    "name": "Allocait",
+    "email": "support@allocait.app"
+  },
+  "plugins": [
+    {
+      "name": "allocait",
+      "source": "./",
+      "description": "Check a portfolio against its own written allocation rules, plan a rebalance, and keep positions, cash, and rules current."
+    }
+  ]
+}
