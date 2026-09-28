@@ -1,0 +1,20 @@
+{
+  "name": "allocait",
+  "displayName": "Allocait",
+  "version": "0.1.0",
+  "description": "Check a portfolio against its own written allocation rules, plan a rebalance, and keep positions, cash, and rules current, through the Allocait MCP connector. Allocait never places trades or gives investment advice; every check runs against rules the user declared themselves.",
+  "author": { "name": "Allocait", "email": "support@allocait.app", "url": "https://allocait.app" },
+  "homepage": "https://allocait.app",
+  "repository": "https://github.com/allocait-app/claude-plugin",
+  "license": "MIT",
+  "keywords": ["portfolio", "compliance", "rebalance", "allocation", "personal-finance"],
+  "userConfig": {
+    "allocait_api_key": {
+      "type": "string",
+      "title": "Allocait API key",
+      "description": "Your Allocait agent API key, from Settings > Developer in the Allocait app. Sent only as the x-api-key header on calls to Allocait's own MCP server. This field is the interim way to connect in Claude Code, before Allocait's OAuth connector ships; see the README.",
+      "sensitive": true,
+      "required": true
+    }
+  }
+}
