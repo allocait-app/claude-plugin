@@ -1,5 +1,5 @@
 ---
-description: Reporting a trade made outside Allocait should trigger allocait-portfolio-upkeep and reconcile via the full desired state, not claim to place a trade.
+description: Reporting a trade made outside Allocait should trigger allocait-portfolio-upkeep and record the holding's new total with save_position, not a delta, and not claim to place a trade.
 tags: [smoke]
 max_turns: 10
 allowed_tools: [Skill]

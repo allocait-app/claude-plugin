@@ -1,5 +1,5 @@
 ---
-description: An unexpected tool error should trigger allocait-feedback and route to submit_agent_feedback, not submit_support_request.
+description: An unexpected tool error should trigger allocait-feedback and route to send_feedback with topic tools, not topic account.
 tags: [smoke]
 max_turns: 10
 allowed_tools: [Skill]

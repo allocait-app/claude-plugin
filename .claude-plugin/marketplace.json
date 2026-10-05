@@ -9,7 +9,7 @@
     {
       "name": "allocait",
       "source": "./",
-      "description": "Check a portfolio against its own written allocation rules, plan a rebalance, and keep positions, cash, and rules current."
+      "description": "Check a portfolio against its own written allocation rules, plan a rebalance, and keep holdings, cash, rules, watchlists and playbooks current."
     }
   ]
 }

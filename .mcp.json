@@ -2,7 +2,7 @@
   "mcpServers": {
     "allocait": {
       "type": "http",
-      "url": "https://afqnxznegjnzrhoumaod.supabase.co/functions/v1/mcp",
+      "url": "https://api.allocait.app/functions/v1/mcp",
       "headers": {
         "x-api-key": "${user_config.allocait_api_key}"
       }
