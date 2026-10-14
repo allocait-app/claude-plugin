@@ -5,4 +5,4 @@ max_turns: 10
 allowed_tools: [Skill]
 ---
 
-The get_portfolio_snapshot tool just returned "Error [PRICES_INCOMPLETE]: ... AAPL" but I definitely passed a price for AAPL in my prices object. Something seems off with the tool itself, can you let the Allocait team know?
+The get_portfolio_snapshot tool just returned "Error [PRICES_INCOMPLETE]: ... ALFA" but I definitely passed a price for ALFA in my prices object. Something seems off with the tool itself, can you let the Allocait team know?

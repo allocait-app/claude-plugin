@@ -3,7 +3,7 @@ name: allocait-research
 description: Keep an Allocait user's research current - watchlists, inputs (tracked levels and values), playbooks, monitors and charts. Use when the user wants to add or remove a watchlist symbol, fill in a playbook, record a level or reading, or set up an input, playbook, monitor or chart.
 ---
 
-Allocait keeps the user's own research next to their rules. Every value in it is something the user recorded: Allocait never derives a level, a range or a reading from market data, and neither should you. Record what the user tells you; if a value is missing, ask for it.
+Allocait keeps the user's own research next to their rules. Every value in it is something the user recorded: Allocait never derives a level, a range or a reading from market data, and you don't either. Record what the user tells you; if a value is missing, ask for it.
 
 ## How every save works
 
@@ -20,22 +20,23 @@ Allocait keeps the user's own research next to their rules. Every value in it is
 3. To reorder or replace the list, send `items` in the new order, every symbol you want to keep included.
 4. To create one, call `save_watchlist` with `name` and optional `items`. A watchlist holds up to 200 symbols, and an account up to 50 watchlists.
 
-"Add NVDA to my Tech watchlist" is `list_watchlists`, then `save_watchlist {watchlist_id, add: [{symbol: "NVDA"}]}`. Never resend the list without a symbol the user didn't ask to remove.
+"Add BRAV to my Tech watchlist" is `list_watchlists`, then `save_watchlist {watchlist_id, add: [{symbol: "BRAV"}]}`. Never resend the list without a symbol the user didn't ask to remove.
 
 ## Inputs: what the user tracks
 
 An input is a value the user tracks: a level, a reading, a rating or a note. `list_inputs` returns each one's name, `data_type` (`NUMBER`, `DECIMAL`, `PERCENTAGE`, `TEXT`, `CHOICE`), `scope` (`PORTFOLIO`, or `SYMBOL` for one value per symbol) and, for CHOICE, its `options`. Name one input to also get its recorded values.
 
-`save_input` creates or changes one. For a CHOICE input, `options` is the whole list in order. The data type and scope can't change once values are recorded. `delete_input` also removes the input from the playbooks and charts that use it and names them; a monitor that uses it blocks the delete with `IN_USE`.
+`save_input` creates or changes one. For a CHOICE input, `options` is the whole list in order. The data type and scope can't change once values are recorded. `carry_forward: true` marks a value that holds until the user changes it, such as a level: a playbook then shows its latest value on or before the date, not only a value recorded that day. `list_inputs` returns the flag on each input. `delete_input` also removes the input from the playbooks and charts that use it and names them; a monitor that uses it blocks the delete with `IN_USE`.
 
 ## Fill in a playbook
 
 A playbook is a grid: symbols down the side, inputs across the top.
 
-1. `list_portfolios` names each portfolio's playbooks as `[{id, name, date}]`, newest first. A playbook is one dated sheet: for a new day the app copies the previous one under a new name, with that day's date.
-2. `get_playbook` with `playbook_id` and the `date` (for "today", pass today's date) returns its symbols, its columns with their `data_type`, `scope` and `options`, and the values already recorded.
-3. Ask the user for the missing values. Don't fill a value they didn't give you.
-4. `record_input_values` with `entries: [{input, date, value, symbol?}]`, by input name. Pass `symbol` only for SYMBOL-scope inputs. A CHOICE value must be one of the input's options; a number is a plain number (220, not $220). A value for the same input, symbol and date replaces the old one, and `value: null` deletes it.
+1. `list_portfolios` names each portfolio's playbooks as `[{id, name, date}]`, newest first. One playbook serves every day: `date` is the sheet's own date, and `save_playbook` moves it with `default_date`. Don't create a playbook for a new day.
+2. `get_playbook` with `playbook_id` and the `date` (for "today", pass today's date) returns its symbols, its columns with their `data_type`, `scope`, `carry_forward` and `options`, and the values for that date. Without `date` it reads the sheet's own date, which can be an earlier day.
+3. Each value carries `date`, the day it was recorded, and `carried`. A column with `carry_forward: true` shows its latest value on or before the date, so `carried: true` means the value is from an earlier day. A column without it shows only what was recorded on the date. `needs_input` lists the cells with no value.
+4. Ask the user for the values in `needs_input`. Don't fill a value they didn't give you, and leave a carried value alone unless the user gives a new one.
+5. `record_input_values` with `entries: [{input, date, value, symbol?}]`, by input name. Pass `symbol` only for SYMBOL-scope inputs. A CHOICE value must be one of the input's options; a number is a plain number (220, not $220). A value for the same input, symbol and date replaces the old one, and `value: null` deletes it. On a `carry_forward` column, deleting that day's value shows the earlier one again.
 
 `save_playbook` sets which symbols a playbook covers (`source`: `positions`, `watchlist` with `watchlist_id`, or `custom` with `symbols`) and which inputs are its columns (`inputs`, in order).
 

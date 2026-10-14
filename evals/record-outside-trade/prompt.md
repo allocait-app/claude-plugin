@@ -5,4 +5,4 @@ max_turns: 10
 allowed_tools: [Skill]
 ---
 
-I just bought 10 more shares of MSFT through my broker at $420 a share, outside of Allocait. Can you update my portfolio to reflect that?
+I just bought 10 more shares of ALFA through my broker at $181.5 a share, outside of Allocait. Can you update my portfolio to reflect that?

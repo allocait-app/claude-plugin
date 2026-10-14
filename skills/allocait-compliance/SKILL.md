@@ -1,6 +1,6 @@
 ---
 name: allocait-compliance
-description: Check an Allocait portfolio against its own allocation rules, or plan a rebalance toward them. Use when the user asks whether their portfolio is in line with their rules, wants a compliance check, or wants to plan or preview a rebalance.
+description: Check an Allocait portfolio against its own allocation rules, or work out the amounts that close the gap to them. Use when the user asks how far their portfolio is from their rules, wants a compliance check, or wants a rebalance preview.
 ---
 
 Allocait is a process layer for a portfolio, not a brokerage. It never places a trade, never connects to a brokerage, and never recommends buying, selling, or holding anything. Every verdict below is the user's own allocation band, applied to numbers you supply; Allocait itself stores no opinion about any security.
@@ -15,8 +15,8 @@ No way to look up a price? Ask the user. Never use a remembered or estimated pri
 
 1. Call `list_portfolios` (no arguments) to find the `portfolio_id` you need. It returns each portfolio's name, currency and active scenario, its playbooks, monitors and charts, and every scenario. No dollar totals come back here.
 2. Call `get_portfolio_snapshot` with that `portfolio_id`. This is the one call to reason from, not a set of separate reads:
-   - Without `prices`, the snapshot is unpriced: shares, rules, monitor settings, playbooks and charts come back, but values, `compliance`, `rebalance` and every monitor reading are `null`. The response's `symbols_to_price` array lists exactly what to fetch next.
-   - Call it again with a `prices` object (`{ "AAPL": 231.40, ... }`, symbol to price in the portfolio's own currency) covering those symbols. The same call then returns values, the compliance verdict, a rebalance plan, and monitor readings, all computed from your numbers only.
+   - Without `prices`, the snapshot is unpriced: shares, rules, monitor settings, playbooks and charts come back, but values, `compliance` and every monitor reading are `null`. The response's `symbols_to_price` array lists exactly what to fetch next.
+   - Call it again with a `prices` object (`{ "ALFA": 181.5, ... }`, a fictional example, symbol to price in the portfolio's own currency) covering those symbols. The same call then returns values, the compliance verdict and monitor readings, all computed from your numbers only. It has no `rebalance` block unless you add `include_rebalance: true`, which you do only when the user asks what it would take to get back inside a band.
    - `scenario_id` is optional; it defaults to the portfolio's own active scenario, the same one the app checks against.
 
 Answer from the snapshot's `compliance` block:
@@ -26,26 +26,26 @@ Answer from the snapshot's `compliance` block:
 - `size_violations`: each holding outside its class's position size range (`size_min_pct`/`size_max_pct`, for **one holding** in that class). A class with no size range sets no limit.
 - `unchecked`: holdings no rule could judge, each with its reason (for example, a holding with no asset class). Mention them; don't treat them as compliant.
 
-Each breach's status is `ABOVE_MAX` or `BELOW_MIN`.
+Each breach's status is `ABOVE_MAX` or `BELOW_MIN`. Each also carries `outside_by`: `edge` (`above_max` or `below_min`), `pct_points` (how far outside its band or range, in percentage points of portfolio value) and `value` (the dollar amount outside, at your prices). Report it as where the rule stands. It names no trade; amounts come only from the `rebalance` block, and only when the user asks for them.
 
-`prices` must cover every non-cash position before `compliance` and `rebalance` are computed at all, so every class verdict here is based on all of that class's holdings. Allocait's own dashboard can show a "based on N of M holdings" note for a partly priced class; that note never applies to anything you see through this tool.
+`prices` must cover every non-cash position before `compliance` (and `rebalance`, when asked for) is computed at all, so every class verdict here is based on all of that class's holdings. Allocait's own dashboard can show a "based on N of M holdings" note for a partly priced class; that note never applies to anything you see through this tool.
 
-## Plan a rebalance
+## Work out the amounts that close a gap
 
-The priced snapshot's `rebalance` block is the plan:
+When the user asks what it would take to get back inside a band, call the snapshot with `prices` and `include_rebalance: true`. Its `rebalance` block holds the arithmetic:
 
-- `trades`: the buys and sells that would bring each class back to its target (the rule's target, or the band's midpoint), largest first. Each trade carries `class_target_pct`.
+- `trades` (the wire name): the pro rata amounts that bring each class to its target (the rule's target, or the band's midpoint), largest first. Each amount carries `class_target_pct`.
 - `resulting_classes`: each class's share after those trades, Cash included. Sale proceeds stay in Cash.
 - `unresolved`: any class still outside its band after the trades, such as a class with nothing to buy into. Trades don't resize holdings, so report the size verdicts separately.
 
-This is a plan, not an order. Report it; the user, at their own broker and outside Allocait, is who acts on it, never you and never Allocait.
+This is arithmetic on the user's own bands, not an order and not a suggestion to buy, sell or hold. Report the amounts as amounts. What happens next is the user's decision, made outside Allocait, never yours and never Allocait's.
 
-## Before proposing any change, check it first
+## To see what a change does, check it first
 
-Two read-only tools take a proposed state rather than acting on it:
+To check a specific change, such as 40 more shares of a symbol, use `allocait-check` (`check_trades`). Two more read-only tools take a proposed state rather than acting on it:
 
-- **`validate_allocations`**: pass `portfolio_id` and an `allocations` map (symbol to proposed percentage of portfolio value, 0-100; the set should sum to 100). `scenario_id` is optional and defaults to the active scenario. Returns `sum_pct`, class band breaches (`violations`), and holdings outside their size range (`size_violations`) for that plan; `is_valid` is true only when the sum is 100, both lists are empty and `unknown_symbols` is empty. Propose 0 for an exit; a class the plan leaves empty counts as 0% against its band, the same verdict `compliance` gives once the exit is recorded. For a symbol the user doesn't hold yet, pass `asset_classes` (symbol to class name or id) so it is judged like a holding.
-- **`calculate_position_size`**: the shares to buy or sell to bring one holding inside its size range. See `allocait-portfolio-upkeep`.
+- **`validate_allocations`**: pass `portfolio_id` and an `allocations` map (symbol to proposed percentage of portfolio value, 0-100; `is_valid` needs them to sum to 100). `scenario_id` is optional and defaults to the active scenario. Returns `sum_pct`, class band breaches (`violations`), and holdings outside their size range (`size_violations`) for that plan; `is_valid` is true only when the sum is 100, both lists are empty and `unknown_symbols` is empty. Propose 0 for an exit; a class the plan leaves empty counts as 0% against its band, the same verdict `compliance` gives once the exit is recorded. For a symbol the user doesn't hold yet, pass `asset_classes` (symbol to class name or id) so it is judged like a holding.
+- **`calculate_position_size`**: the share count that sits inside the size range the user set for one holding. See `allocait-portfolio-upkeep`.
 
 Neither tool writes anything. Run one, show the user what it found, and only then consider a write from `allocait-portfolio-upkeep` (to record a trade the user made) or `allocait-policy` (to change the rules) if they ask for one.
 
@@ -64,5 +64,5 @@ Errors read `Error [CODE]: message`, and the message ends with the next step. Th
 
 ## What this skill never does
 
-- Never calls a write tool. If the user wants to act on a rebalance plan or a validation result, hand off to `allocait-portfolio-upkeep` or `allocait-policy` and confirm with them first.
-- Never treats a monitor reading or a compliance verdict as investment advice. State the numbers and the rule; do not add an opinion about what the user should buy or sell.
+- Never calls a write tool. If the user wants to act on the rebalance amounts or a validation result, hand off to `allocait-portfolio-upkeep` or `allocait-policy` and confirm with them first.
+- Never treats a monitor reading or a compliance verdict as investment advice. State the numbers and the rule; do not add an opinion about buying, selling or holding.

@@ -5,4 +5,4 @@ max_turns: 10
 allowed_tools: [Skill]
 ---
 
-Fill in today's playbook for my Main Portfolio. SPY trend is Bullish and its support level is 560; for QQQ the trend is Neutral and support is 470.
+Fill in today's playbook for my Main Portfolio. ALFA trend is Bullish and its support level is 172; for BRAV the trend is Neutral and support is 91.

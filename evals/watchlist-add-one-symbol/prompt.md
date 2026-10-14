@@ -5,4 +5,4 @@ max_turns: 10
 allowed_tools: [Skill]
 ---
 
-Add NVDA to my Tech watchlist.
+Add BRAV to my Tech watchlist.

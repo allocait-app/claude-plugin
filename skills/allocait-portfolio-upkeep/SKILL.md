@@ -1,13 +1,13 @@
 ---
 name: allocait-portfolio-upkeep
-description: Record Allocait holdings and cash movements, or size a new position inside the user's own range. Use when the user reports a trade they made outside Allocait, a deposit or withdrawal, holdings they already own, or asks how big a new position should be.
+description: Record Allocait holdings and cash movements, or size a new position inside the user's own range. Use when the user reports a trade they made outside Allocait, a deposit or withdrawal, holdings they already own, or asks what size would fit their range.
 ---
 
-Allocait never executes anything against a brokerage. These tools only update Allocait's own record of what the user holds, after they tell you about something that already happened (a trade they placed elsewhere, cash moved in the real world), or help them plan (how big a position should be). Never say a trade was placed, executed, or confirmed.
+Allocait never executes anything against a brokerage. These tools only update Allocait's own record of what the user holds, after they tell you about something that already happened (a trade they placed elsewhere, cash moved in the real world), or help them size a position inside the range they set. Never say a trade was placed, executed, or confirmed.
 
 ## `save_position`: one holding as it stands now
 
-Use this for a single trade. Pass `portfolio_id`, `symbol`, and `shares`: the holding's **new total**, never the change. "I bought 10 more MSFT" with 40 already held is `shares: 50`, never `shares: 10` and never "+10".
+Use this for a single trade. Pass `portfolio_id`, `symbol`, and `shares`: the holding's **new total**, never the change. "I added 10 more ALFA" with 40 already held is `shares: 50`, never `shares: 10` and never "+10".
 
 - `price` is the price paid or received. It's required when shares change, and it's the user's price (Allocait never fills one).
 - `shares: 0` closes the holding.
@@ -21,7 +21,7 @@ Read the current holding first (from `get_portfolio_snapshot`) so you can comput
 
 ## `update_positions`: the whole holdings list
 
-Use this to reconcile many holdings at once, for example from a statement. Pass `portfolio_id` and `positions`: every non-cash holding as it should stand, each `{ symbol, shares, price?, asset_class?, sizing?, comment? }`.
+Use this to reconcile many holdings at once, for example from a statement. Pass `portfolio_id` and `positions`: every non-cash holding as the list now reads, each `{ symbol, shares, price?, asset_class?, sizing?, comment? }`.
 
 - A holding you leave out is **refused, not closed**: the call fails with `WOULD_CLOSE_POSITIONS` naming it. Include it, or close it with an explicit `{ symbol, shares: 0, price }` row.
 - `price` is needed on rows whose shares change; it can be left out on unchanged rows.
@@ -37,7 +37,7 @@ Allocait settles every buy against recorded cash. To record holdings the user ow
 
 ## `calculate_position_size`: a calculation, no write
 
-Use this for "how big should my position in X be". Nothing is written; it takes numbers and returns a target share count. Inputs: `current_shares` (0 for a new position), `price`, `portfolio_value` (the denominator for every percentage), `size_min_pct`/`size_max_pct` (the size range for one holding in that class, from the rule; not the class band), `sizing_mode`, `basis_points` (adjustment, 100 = 1%, default 0), `manual_shares`, and `cash` (for `can_afford`, default 0).
+Use this for "what size would fit my range". It returns the share count that sits inside the size range the user set. Name that range when you report it. Nothing is written; it takes numbers and returns a target share count. Inputs: `current_shares` (0 for a new position), `price`, `portfolio_value` (the denominator for every percentage), `size_min_pct`/`size_max_pct` (the size range for one holding in that class, from the rule; not the class band), `sizing_mode`, `basis_points` (adjustment, 100 = 1%, default 0), `manual_shares`, and `cash` (for `can_afford`, default 0).
 
 `sizing_mode` (default `MANUAL`):
 - `MANUAL` sizes from `manual_shares`, or keeps the current size if `manual_shares` is left out.

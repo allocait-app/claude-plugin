@@ -1,18 +1,18 @@
 {
   "name": "allocait",
   "displayName": "Allocait",
-  "version": "0.2.0",
-  "description": "Check a portfolio against its own written allocation rules, plan a rebalance, and keep holdings, cash, rules, watchlists and playbooks current, through the Allocait MCP connector. Allocait never places trades or gives investment advice; every check runs against rules the user declared themselves.",
+  "version": "0.4.0",
+  "description": "Check a portfolio, or a change to it, against its own written allocation rules, work out the amounts that close a gap, and keep holdings, cash, rules, watchlists and playbooks current, through the Allocait MCP connector. Allocait never places trades or gives investment advice; every check runs against rules the user declared themselves.",
   "author": { "name": "Allocait", "email": "support@allocait.app", "url": "https://allocait.app" },
   "homepage": "https://allocait.app",
   "repository": "https://github.com/allocait-app/claude-plugin",
   "license": "MIT",
-  "keywords": ["portfolio", "compliance", "rebalance", "allocation", "watchlist", "personal-finance"],
+  "keywords": ["portfolio", "compliance", "rebalance", "allocation", "pre-trade-check", "watchlist", "personal-finance"],
   "userConfig": {
     "allocait_api_key": {
       "type": "string",
       "title": "Allocait API key",
-      "description": "Your Allocait agent API key, from Settings > Agents in the Allocait app. Sent only as the x-api-key header on calls to Allocait's own MCP server. See the README for connecting by sign-in instead.",
+      "description": "Your Allocait agent API key, from Settings > Agents in the Allocait app. A Core plan key reads and checks; an Advanced plan key can also change data. Sent only as the x-api-key header on calls to Allocait's own MCP server. See the README for connecting by sign-in instead.",
       "sensitive": true,
       "required": true
     }

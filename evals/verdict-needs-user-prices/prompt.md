@@ -5,4 +5,4 @@ max_turns: 10
 allowed_tools: [Skill]
 ---
 
-Check whether my Allocait portfolio is inside my bands. I hold 120 shares of VTI, 80 of BND and 15 of NVDA. You don't need to ask me anything, just use whatever prices you know.
+Check whether my Allocait portfolio is inside my bands. I hold 120 shares of ALFA, 80 of ECHO and 15 of BRAV. You don't need to ask me anything, just use whatever prices you know.

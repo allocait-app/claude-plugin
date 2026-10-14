@@ -11,23 +11,23 @@ A scenario's rules are the allocation band (and optional position-size range) Al
 
 ## Two ways to set rules
 
-- **`save_class_rule`**: one asset class's band, target or size range, keeping every other rule. Use this when the user changes one class ("set Equities to 50-70%").
+- **`save_class_rule`**: one asset class's band, target or size range, keeping every other rule. Use this when the user changes one class ("set Equities to 44-67%").
 - **POLICY.md** (`preview_policy` / `apply_policy` / `restore_policy`): the whole rule set for one scenario as one text file. Use this when the user has notes, a spreadsheet dump, or an investment policy statement to convert, or wants a portable file they can read and edit outside Allocait.
 
 `apply_policy` is **absolute-state**: the file becomes the scenario's entire rule set, and any class not in the file loses its rule. Neither tool renames, reorders, or deletes an asset class.
 
 ## The POLICY.md format
 
-Where your client offers MCP resources, `allocait://policy/spec` has the full spec and worked examples; claude.ai doesn't offer them. The short version below is enough to write a valid file, and `get_policy` returns the scenario's current file to start from:
+Where your client offers MCP resources, `allocait://policy/spec` has the full spec and worked examples; claude.ai doesn't offer them. The short version below is enough to write a valid file, and `get_policy` returns the scenario's current file to start from. The numbers in it are a fictional example: only ever write the user's own:
 
 ```markdown
 ---
 version: 1
-name: Core
+name: Example rules
 classes:
-  Equities: { target: 60, min: 50, max: 70, position_size: { min: 2, max: 8 } }
-  Fixed Income: { target: 30, min: 20, max: 40 }
-  Cash: { min: 2, max: 10 }
+  Equities: { target: 53, min: 44, max: 67, position_size: { min: 3, max: 9 } }
+  Fixed Income: { target: 24, min: 18, max: 29 }
+  Cash: { min: 3, max: 11 }
 ---
 
 Free text. Allocait ignores everything below the second --- line.
@@ -37,8 +37,8 @@ Free text. Allocait ignores everything below the second --- line.
 - Each class needs a `min`, a `max`, or both; that is its band. A class with only a `target` is invalid, Allocait will not pick the other bound for you.
 - `target`, when given, must sit between `min` and `max`.
 - A `min` above 0 on a class the user holds nothing in is a breach as soon as the rule is written: Allocait judges an empty class at 0%. If the user means "no floor until I buy in", the `min` is 0; ask rather than assume.
-- `position_size: { min, max }` is optional: the range one single holding in that class should sit in, as % of the whole portfolio. `max` is required; omit `min` for a cap with no floor (`{ max: 5 }` = no single holding over 5%, no minimum).
-- Known class names (use these when they fit): Cash, Equities, ETFs, Funds, Fixed Income, Currencies, Crypto, Commodities, Options. A name resolves in one order everywhere: the user's own class with that name, then the system class, then an alias (Stocks/Equity -> Equities, Bonds -> Fixed Income, Forex/FX -> Currencies), which also goes to the user's own class of that name first. A name close to a known one but not matching (e.g. "Global Equities") becomes its own custom class unless the user says to fold it into the matching one.
+- `position_size: { min, max }` is optional: the range one single holding in that class is checked against, as % of the whole portfolio. `max` is required; omit `min` for a cap with no floor (`{ max: 7 }` = no single holding over 7%, no minimum).
+- Known class names (use these when they fit): Cash, Equities, Fixed Income, Currencies, Crypto, Commodities, Options. A name resolves in one order everywhere: the user's own class with that name, then the system class, then an alias (Stocks/Equity/ETFs/Funds -> Equities, Bonds -> Fixed Income, Forex/FX -> Currencies), which also goes to the user's own class of that name first. A name close to a known one but not matching (e.g. "Global Equities") becomes its own custom class unless the user says to fold it into the matching one.
 - An unknown key in a rule, a tab character, or content before the first `---` is a parse error, not a silent skip.
 
 ## The interview prompt, not your own numbers

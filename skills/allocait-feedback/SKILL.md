@@ -5,7 +5,7 @@ description: Report a problem with the Allocait tools, or ask the Allocait team 
 
 One tool, `send_feedback`, reaches the Allocait team, and its `topic` decides which queue the report lands in. Picking the right topic matters: `tools` is about **you** (the tools, their descriptions, the docs), and `account` is about **the user** (their account, billing, or the product). Never send a user's account or billing question as `topic: tools`, and never send a tool or API complaint as `topic: account`.
 
-`send_feedback` works on read-only connections too, because it changes no portfolio data.
+`send_feedback` works on read-only connections for `topic: tools` only. On a read-only connection `topic: account` returns `READ_ONLY_KEY` or `OAUTH_WRITE_NOT_GRANTED`, so tell the user to use Contact support in the app.
 
 ## `topic: tools`: something about the tools or docs is wrong
 

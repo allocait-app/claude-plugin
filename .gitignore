@@ -1,0 +1,5 @@
+.env*
+*.pem
+.vercel
+*.tsbuildinfo
+.DS_Store
