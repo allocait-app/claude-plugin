@@ -24,13 +24,7 @@ This plugin connects by signing in. It stores no API key.
 
 You need an Allocait account with an active plan. The sign-in screen shows which access your plan offers.
 
-Another MCP client can connect with an API key instead. This route is for clients other than this plugin, which never reads, sends or stores an API key. Create a key in the Allocait app under Settings > Agents, then add the server with the key as a header. Replace the placeholder with your own key:
-
-```bash
-claude mcp add --transport http allocait https://api.allocait.app/functions/v1/mcp --header "x-api-key: YOUR_ALLOCAIT_API_KEY"
-```
-
-The [connection guide](https://docs.allocait.app/connect-an-agent) covers both ways.
+The [connection guide](https://docs.allocait.app/connect-an-agent) covers other AI clients.
 
 ## Troubleshooting
 
@@ -55,7 +49,7 @@ Email support@allocait.app, or see https://allocait.app/support. Agents connecte
 This repository is published from Allocait's private source. Two refs matter:
 
 - **`main`** is what `/plugin marketplace add allocait-app/claude-plugin` installs in Claude Code. It carries `.claude-plugin/marketplace.json`.
-- **`directory`** is the ref the Claude plugin directory follows. When submitting at claude.ai/directory/manage, enter this repository, leave the plugin path empty, and set the branch or tag to `directory`, not `main`. It holds the same files without the marketplace file, so `.claude-plugin/` contains only `plugin.json`. A commit lands there only on a deliberate release, because the directory scans every new commit on the ref it follows and later passing versions can go live on their own. You may follow a tag instead: a tag stays on its commit until it is moved.
+- **`directory`** is the ref the Claude plugin directory follows. When submitting at claude.ai/directory/manage, enter this repository, leave the plugin path empty, and set the branch or tag to `directory`, not `main`. It holds the same files without the marketplace file or `.gitignore`, so `.claude-plugin/` contains only `plugin.json`. A commit lands there only on a deliberate release, because the directory scans every new commit on the ref it follows and later passing versions can go live on their own. You may follow a tag instead: a tag stays on its commit until it is moved.
 
 ## License
 
