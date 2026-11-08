@@ -3,3 +3,5 @@
 .vercel
 *.tsbuildinfo
 .DS_Store
+# `claude plugin eval` writes its results here. Keep them out of the published folder.
+evals/results/

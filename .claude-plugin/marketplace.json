@@ -2,7 +2,7 @@
   "name": "allocait",
   "description": "Allocait's plugin for Claude: check a portfolio against your own allocation rules. Never trades.",
   "owner": {
-    "name": "Allocait",
+    "name": "RidgeXAI",
     "email": "support@allocait.app"
   },
   "plugins": [

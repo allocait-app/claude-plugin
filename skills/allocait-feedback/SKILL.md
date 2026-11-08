@@ -1,37 +1,22 @@
 ---
 name: allocait-feedback
-description: Report a problem with the Allocait tools, or ask the Allocait team for help with the user's own account, billing, or a product issue. Use when the user wants to report a bug, request a feature, flag a confusing or wrong tool, or ask a billing question about Allocait.
+description: Report a problem with the Allocait tools, or ask the Allocait team for help with the user's own account, when the user asks. Use when the user wants to report a bug, request a feature, flag a confusing or wrong tool, or get help with their Allocait account.
 ---
 
-One tool, `send_feedback`, reaches the Allocait team, and its `topic` decides which queue the report lands in. Picking the right topic matters: `tools` is about **you** (the tools, their descriptions, the docs), and `account` is about **the user** (their account, billing, or the product). Never send a user's account or billing question as `topic: tools`, and never send a tool or API complaint as `topic: account`.
+`send_feedback` messages the Allocait team, who publish these tools. Use it only when the user asks you to report a problem or ask for help. Never file a report on your own, never file one after an automatic retry, and never file one to pass along an error the user has not asked you to report.
 
-`send_feedback` works on read-only connections for `topic: tools` only. On a read-only connection `topic: account` returns `READ_ONLY_KEY` or `OAUTH_WRITE_NOT_GRANTED`, so tell the user to use Contact support in the app.
+Only what you write in `summary` and `details` is sent. Do not include holdings, rules, balances or other account data. If the problem can't be described without them, describe it in general terms and leave the figures out.
 
-## `topic: tools`: something about the tools or docs is wrong
+## Pick the topic
 
-Use this when a tool behaved unexpectedly, a tool description or a doc (this skill included) is wrong or ambiguous, or you needed a capability that doesn't exist. This is feedback for the Allocait team about the tools, not a request on the user's behalf.
+- `tools`: a tool behaved unexpectedly, a tool description or a doc (this skill included) is wrong or ambiguous, or an operation the user needed doesn't exist. `kind` is `bug`, `docs`, `missing_capability` or `other`. Name the tool in `tool`, the code from its error in `error_code` and the `request_id` of an `INTERNAL_ERROR` in `request_id`. In `details` (up to 1000 characters) say what you called, what you expected and what came back.
+- `account`: the user's own account, or something in the app itself ("Allocait won't let me..."). `kind` is `bug`, `billing`, `feature_request` or `other`. `details` is required: what the user wants help with. It's filed as coming from an agent.
+- If you can't tell which, ask the user briefly: the two land in different queues. Never send an account question as `tools`, or a tool complaint as `account`.
 
-Fields:
-- `kind` (required): `bug` (a tool behaved unexpectedly), `docs` (a description or doc is wrong or ambiguous), `missing_capability` (an operation you needed doesn't exist), or `other`.
-- `summary` (required, 1-200 characters): one line.
-- `details` (optional, up to 5000 characters): the fuller explanation, reproduction steps, or what you expected instead.
-- `tool` (optional): the tool this concerns, for example `"get_portfolio_snapshot"`.
-- `error_code` (optional): the code from the error this concerns, if any.
-- `request_id` (optional): the `request_id` from an `INTERNAL_ERROR`, if there was one.
-- `client` (optional): your own client's name, version or model, if you want it recorded.
+`tools` works on a read-only connection. `account` doesn't: it returns `READ_ONLY_KEY` or `OAUTH_WRITE_NOT_GRANTED`, so tell the user to use Contact support in the app.
 
-## `topic: account`: the user's own account, billing, or product issue
+A successful call returns `{ topic, filed: true, message }`. Tell the user in your own words that the report was sent. Don't promise a reply or a fix, and don't also tell the user to email anyone unless the call itself fails.
 
-Use this when the user asks you to report a problem or contact support on their behalf. Fields: `kind` (required: `bug`, `billing`, `feature_request`, or `other`), `summary` (required, one line), and `details` (required for this topic: what the user wants help with). It's filed as coming from an agent.
+## Errors
 
-## Deciding which topic
-
-- The user says "Allocait won't let me..." about their own account, a bill, or something in the app itself: `topic: account`.
-- A tool call you made returned an error you did not expect, its description did not match what happened, or you could not find an operation you needed: `topic: tools`.
-- If you can't tell which it is, ask the user briefly rather than guessing, since the two land in different queues.
-
-Never attach portfolio data on your own. Only what you write in `summary` and `details` is sent, so don't paste the user's holdings or rules unless they're needed to reproduce the problem. Filing notifies the Allocait team, so don't also tell the user to email anyone unless the call itself fails.
-
-## Error codes
-
-`INVALID_INPUT` (a field over its limit, or `details` missing for `topic: account`; fix it and try again), `DAILY_LIMIT_EXCEEDED` (20 reports in 24 hours; try again later), `INTERNAL_ERROR` (retry once). Show the message to the user.
+`INVALID_INPUT` (a field over its limit, or `details` missing for `account`; fix it and try again), `DAILY_LIMIT_EXCEEDED` (stop for now; the limit resets within a day), `INTERNAL_ERROR` (retry once, and if it fails again tell the user and give them its `request_id`; don't file a second report about the failed one).
