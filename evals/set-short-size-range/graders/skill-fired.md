@@ -1,5 +1,5 @@
 ---
 type: tool_used
 tool: Skill
-input_match: '"skill"\s*:\s*"(?:[\w-]+:)?allocait-policy"'
+input_match: '"skill"\s*:\s*"(?:[\w-]+:)?allocait-rules"'
 ---

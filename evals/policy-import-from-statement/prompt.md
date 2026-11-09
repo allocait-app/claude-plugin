@@ -1,5 +1,5 @@
 ---
-description: Pasting an investment policy statement should trigger allocait-policy and preview before writing, without inventing numbers.
+description: Pasting an investment policy statement should trigger allocait-rules and preview before writing, without inventing numbers.
 tags: [smoke]
 max_turns: 10
 allowed_tools: [Skill]

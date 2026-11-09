@@ -1,7 +1,7 @@
 {
   "name": "allocait",
   "displayName": "Allocait",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "description": "A rules engine for your investment portfolio, independent of any brokerage. Write your rules once, and Claude checks your holdings and proposed changes against them through the Allocait connector, and keeps your holdings, cash, rules and research current. Allocait never places trades or gives investment advice.",
   "author": { "name": "RidgeXAI", "email": "support@allocait.app", "url": "https://allocait.app" },
   "homepage": "https://allocait.app",
