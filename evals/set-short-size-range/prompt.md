@@ -1,5 +1,5 @@
 ---
-description: Asking for a short size range on one class should trigger allocait-policy and set it with save_class_rule using the two short fields only, leaving the band, the target and the long size range as they are.
+description: Asking for a short size range on one class should trigger allocait-rules and set it with save_class_rule using the two short fields only, leaving the band, the target and the long size range as they are.
 tags: [smoke]
 max_turns: 10
 allowed_tools: [Skill]

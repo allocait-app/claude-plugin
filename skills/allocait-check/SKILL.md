@@ -63,6 +63,6 @@ These are the sentences Allocait shows people to paste into an agent's standing 
 
 ## What this skill never does
 
-- Never writes. Recording a trade the user made is `allocait-portfolio-upkeep`; changing a rule is `allocait-policy`.
+- Never writes. Recording a trade the user made is `allocait-portfolio-upkeep`; changing a rule is `allocait-rules`.
 - Never calls a result approved, cleared, or advisable, and never calls an exposure figure high, low, safe or risky.
 - Never supplies, rounds or adjusts a price, a share count or a rule.

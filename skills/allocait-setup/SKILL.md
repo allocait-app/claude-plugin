@@ -9,8 +9,8 @@ A setup file is one Markdown file of definitions: what the user's research dashb
 
 - The user has a file someone else wrote, or asks you to apply one.
 - The user wants several of these at once, such as a scenario with its classes plus watchlists, Inputs and a playbook. One reviewed bundle with one undo is better than many separate saves.
-- For one change, such as one class's range or one symbol on a watchlist, use `save_class_rule` or `save_watchlist` (see `allocait-policy` and `allocait-research`).
-- A POLICY.md is one scenario's rules and nothing else. Use `preview_policy` for it, not these tools.
+- For one change, such as one class's range or one symbol on a watchlist, use `save_class_rule` or `save_watchlist` (see `allocait-rules` and `allocait-research`).
+- Rules text is one scenario's rules and nothing else. Use `preview_rules` for it, not these tools.
 
 ## The loop
 
@@ -59,7 +59,7 @@ scenarios:
 ---
 ```
 
-A file needs at least one of `scenarios`, `custom_asset_classes`, `watchlists`, `inputs` and `portfolio` (which holds `playbooks`, `monitors` and `charts`). Each `scenarios` entry's `classes` is the same map a POLICY.md has. Leave out any key the user has nothing for, and say so.
+A file needs at least one of `scenarios`, `custom_asset_classes`, `watchlists`, `inputs` and `portfolio` (which holds `playbooks`, `monitors` and `charts`). Each `scenarios` entry's `classes` is the same map rules text has. Leave out any key the user has nothing for, and say so.
 
 Every number in a rule is the user's own. Never suggest, round, fill in or adjust one, and never offer a typical range. If the user has no number for something, leave it out and say so.
 

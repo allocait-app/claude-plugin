@@ -56,7 +56,7 @@ To check a specific change, such as 40 more shares of a symbol, use `allocait-ch
 - **`check_allocations`**: pass `portfolio_id` and an `allocations` map (symbol to proposed percentage of portfolio value; an entry can be negative, which is a short, or above 100; `is_valid` needs them to sum to 100). `scenario_id` is optional and defaults to the active scenario. Returns `sum_pct`, class band breaches (`violations`), and holdings outside their size range (`size_violations`, each with `side`; a negative entry is judged by its size without the minus sign against the class's short size range) for that proposal; `is_valid` is true only when the sum is 100, both lists are empty and `unknown_symbols` is empty. Propose 0 for an exit; a class the proposal leaves empty counts as 0% against its band, the same verdict `compliance` gives once the exit is recorded. For a symbol the user doesn't hold yet, pass `asset_classes` (symbol to class name or id) so it is judged like a holding.
 - **`calculate_position_size`**: the share count that sits inside the size range the user set for one holding. See `allocait-portfolio-upkeep`.
 
-Neither tool writes anything. Run one, show the user what it found, and only then consider a write from `allocait-portfolio-upkeep` (to record a trade the user made) or `allocait-policy` (to change the rules) if they ask for one.
+Neither tool writes anything. Run one, show the user what it found, and only then consider a write from `allocait-portfolio-upkeep` (to record a trade the user made) or `allocait-rules` (to change the rules) if they ask for one.
 
 ## Monitors
 
@@ -71,5 +71,5 @@ The snapshot's `monitors` block (priced calls only) says where a price sits agai
 
 ## What this skill never does
 
-- Never calls a write tool. If the user wants to act on the rebalance amounts or a validation result, hand off to `allocait-portfolio-upkeep` or `allocait-policy` and confirm with them first.
+- Never calls a write tool. If the user wants to act on the rebalance amounts or a validation result, hand off to `allocait-portfolio-upkeep` or `allocait-rules` and confirm with them first.
 - Never treats a monitor reading or a compliance verdict as investment advice. State the numbers and the rule; do not add an opinion about buying, selling or holding.
